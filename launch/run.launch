@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<launch>
+
+  <rosparam command="load" file="$(find tensorrt_yolov9_ros)/config/config.yaml" />
+  <node name="tensorrt_yolov9_ros_node" pkg="tensorrt_yolov9_ros" type="tensorrt_yolov9_ros_node" output="screen"/>
+
+</launch>

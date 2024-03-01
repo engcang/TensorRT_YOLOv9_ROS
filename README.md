@@ -15,18 +15,21 @@
 + `C++` >= 17
 + `cmake` >= 3.14
 + `OpenCV` >= 4.2
-+ `TensorRT`, `CUDA`, `cudNN`
++ `TensorRT`, `CUDA`, `cuDNN`
   + `.engine` file generated with `TensorRT`
++ Tested versions:
+  + Desktop with i9-10900k, RTX 3080 - `CUDA` 11.5, `cuDNN` 8.3.2.44, `TensorRT` 8.4.0.6
 
+</details>
 <br>
 
 ## You may want to:
 
 <details><summary> ■ Unfold here to see how to install CUDA, cuDNN and TensorRT </summary>
 
-### ● **Note that apt install with deb is preferred to run file and source file build for both of `CUDA` and `cudNN`**
+### ● **Note that apt install with deb is preferred to run file and source file build for both of `CUDA` and `cuDNN`**
 + Download and install `CUDA` following instructions at here - https://developer.nvidia.com/cuda-downloads
-+ Download and install `cudNN` following instructions at here - https://developer.nvidia.com/cudnn-downloads
++ Download and install `cuDNN` following instructions at here - https://developer.nvidia.com/cudnn-downloads
   + If you want, also refer to here - https://docs.nvidia.com/deeplearning/cudnn/installation/linux.html#
 + Set up environmental paths
 ```bash
@@ -228,20 +231,13 @@ python train_dual.py --batch-size 4 --epochs 100 --img 640 --device 0 --close-mo
   ```bash
   *** Check the version at https://download.pytorch.org/whl/torch_stable.html
   *** torch >= 1.7.0, torchvision>=0.8.1
-  
+
   pip install torch==1.11.0+cu115 torchvision==0.12.0+cu115 -f https://download.pytorch.org/whl/torch_stable.html
   ```
 4. `RuntimeError: CUDA out of memory. Tried to allocate 50.00 MiB (GPU 0; 9.76 GiB total capacity; 6.68 GiB already allocated; 45.00 MiB free; 6.82 GiB reserved in total by PyTorch) If reserved memory is >> allocated memory try setting max_split_size_mb to avoid fragmentation.  See documentation for Memory Management and PYTORCH_CUDA_ALLOC_CONF`
   + Lack of memory, reduce `batch-size` a lot
 
 </details>
-
-<details><summary> ■ Unfold here to see which versions of CUDA/cudNN/TensorRT are tested </summary>
-
-+ Desktop with i9-10900k, RTX 3080 - CUDA 11.5, cudNN 8.3.2.44, TensorRT 8.4.0.6
-
-</details>
-
 
 <br>
 
@@ -261,7 +257,7 @@ catkin build -DCMAKE_BUILD_TYPE=Release
 <br>
 
 ## How to use
-+ Check the paths of files, names of `ROS` topics in `config.yaml`
++ Check the paths of files, params in `config/config.yaml`
 + Then run
 
 ```bash
