@@ -35,7 +35,8 @@ public:
     ~Yolov9();
    
     void predict(cv::Mat& image, std::vector<Detection>& output);
-    void draw(cv::Mat& image, const std::vector<Detection>& output);
+    void draw(cv::Mat& image, std::vector<Detection>& output);
+    std::string getClassName(const int& class_id) const { return classes[class_id]; }
 
 private:
     void postprocess(std::vector<Detection>& output);
@@ -191,31 +192,31 @@ void Yolov9::postprocess(std::vector<Detection>& output)
     }
 }
 
-void Yolov9::draw(cv::Mat& image, const std::vector<Detection>& output)
+void Yolov9::draw(cv::Mat& image, std::vector<Detection>& output)
 {
     const float ratio_h = model_input_h / (float)image.rows;
     const float ratio_w = model_input_w / (float)image.cols;
 
     for (size_t i = 0; i < output.size(); i++)
     {
-        auto detection = output[i];
-        auto box = detection.bbox;
+        auto& detection = output[i]; // Use auto& to get a reference to each Detection object
+        auto& box = detection.bbox; // Use auto& to directly modify the bbox of the Detection object
         auto class_id = detection.class_id;
         auto conf = detection.conf;
 
         if (ratio_h > ratio_w) 
         {
-            box.x = box.x / ratio_w;
-            box.y = (box.y - (model_input_h - ratio_w * image.rows) / 2) / ratio_w;
-            box.width = box.width / ratio_w;
-            box.height = box.height / ratio_w;
+            box.x = static_cast<int>(box.x / ratio_w);
+            box.y = static_cast<int>((box.y - (model_input_h - ratio_w * image.rows) / 2) / ratio_w);
+            box.width = static_cast<int>(box.width / ratio_w);
+            box.height = static_cast<int>(box.height / ratio_w);
         }
         else 
         {
-            box.x = (box.x - (model_input_w - ratio_h * image.cols) / 2) / ratio_h;
-            box.y = box.y / ratio_h;
-            box.width = box.width / ratio_h;
-            box.height = box.height / ratio_h;
+            box.x = static_cast<int>((box.x - (model_input_w - ratio_h * image.cols) / 2) / ratio_h);
+            box.y = static_cast<int>(box.y / ratio_h);
+            box.width = static_cast<int>(box.width / ratio_h);
+            box.height = static_cast<int>(box.height / ratio_h);
         }
         
         // Detection box

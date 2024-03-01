@@ -87,54 +87,58 @@ void TensorrtYoloRos::processImage(cv::Mat& img_in, const double& time, const bo
     m_yolo->draw(img_in, bboxes_out_);
     std::chrono::high_resolution_clock::time_point end_time_ = std::chrono::high_resolution_clock::now();
 
-    // std::cout << "Time of per frame: " <<  << "ms" << std::endl;
-
+    // handle output
     tensorrt_yolov9_ros::bboxes out_boxes_;
     out_boxes_.header.stamp = ros::Time().fromSec(time);
     for (size_t i = 0; i < bboxes_out_.size(); ++i)
     {
         tensorrt_yolov9_ros::bbox out_box_;
-        // tk::dnn::box b = detNN->batchDetected[0][i];
-        // out_box_.score = b.prob;
-        // out_box_.x = b.x;
-        // out_box_.y = b.y;
-        // out_box_.width = b.w;
-        // out_box_.height = b.h;
-        // out_box_.id = b.cl;
-        // out_box_.Class = detNN->classesNames[b.cl];
-        // out_boxes_.bboxes.push_back(out_box_);
+        auto detected_ = bboxes_out_[i];
+        out_box_.score = detected_.conf;
+        out_box_.x = detected_.bbox.x;
+        out_box_.y = detected_.bbox.y;
+        out_box_.width = detected_.bbox.width;
+        out_box_.height = detected_.bbox.height;
+        out_box_.id = detected_.class_id;
+        out_box_.Class = m_yolo->getClassName(detected_.class_id);
+        out_boxes_.bboxes.push_back(out_box_);
     }
-    // if (out_boxes_.bboxes.size()>0)
-    if (1)
-    {
-        char fps_[40], date_time_[40];
-        std::sprintf(fps_, "%.2f ms spent for inference", std::chrono::duration_cast<std::chrono::microseconds>(end_time_ - start_time_).count()/1e3);
-        cv::putText(img_in, std::string(fps_), cv::Point(5, 20), cv::FONT_HERSHEY_DUPLEX, 0.5, cv::Scalar(0, 0, 0), 2);
-        
-        std::time_t timer_ = std::time(NULL);
-        struct std::tm* t_;
-        t_ = std::localtime(&timer_);
-        if (t_) // not NULL
-        {
-            std::sprintf(date_time_, "%d-%d-%d_%d:%d:%d__%d", t_->tm_year+1900, t_->tm_mon+1, t_->tm_mday, t_->tm_hour, t_->tm_min, t_->tm_sec, m_counter);
-            cv::putText(img_in, std::string(date_time_), cv::Point(5, 40), cv::FONT_HERSHEY_DUPLEX, 0.5, cv::Scalar(255, 50, 50), 2);
-        }
 
-        cv_bridge::CvImage bridge_img_ = cv_bridge::CvImage(out_boxes_.header, sensor_msgs::image_encodings::BGR8, img_in);
-        if (is_compressed)
-        {
-            sensor_msgs::CompressedImage _comp_img_msg;
-            bridge_img_.toCompressedImageMsg(_comp_img_msg);
-            m_detected_img_pub.publish(_comp_img_msg);
-        }
-        else
-        {
-            sensor_msgs::Image _raw_img_msg;
-            bridge_img_.toImageMsg(_raw_img_msg);
-            m_detected_img_pub.publish(_raw_img_msg);
-        }
+    // publish
+    if (out_boxes_.bboxes.size() > 0)
+    {
         m_bounding_box_pub.publish(out_boxes_);
     }
+
+    // draw fps and date time
+    char fps_[40], date_time_[40];
+    std::sprintf(fps_, "%.2f ms infer + draw", std::chrono::duration_cast<std::chrono::microseconds>(end_time_ - start_time_).count()/1e3);
+    cv::putText(img_in, std::string(fps_), cv::Point(5, 20), cv::FONT_HERSHEY_DUPLEX, 0.5, cv::Scalar(0, 0, 0), 2);
+    
+    std::time_t timer_ = std::time(NULL);
+    struct std::tm* t_;
+    t_ = std::localtime(&timer_);
+    if (t_) // not NULL
+    {
+        std::sprintf(date_time_, "%d-%d-%d_%d:%d:%d__%d", t_->tm_year+1900, t_->tm_mon+1, t_->tm_mday, t_->tm_hour, t_->tm_min, t_->tm_sec, m_counter);
+        cv::putText(img_in, std::string(date_time_), cv::Point(5, 40), cv::FONT_HERSHEY_DUPLEX, 0.5, cv::Scalar(255, 50, 50), 2);
+    }
+
+    // publish image
+    cv_bridge::CvImage bridge_img_ = cv_bridge::CvImage(out_boxes_.header, sensor_msgs::image_encodings::BGR8, img_in);
+    if (is_compressed)
+    {
+        sensor_msgs::CompressedImage _comp_img_msg;
+        bridge_img_.toCompressedImageMsg(_comp_img_msg);
+        m_detected_img_pub.publish(_comp_img_msg);
+    }
+    else
+    {
+        sensor_msgs::Image _raw_img_msg;
+        bridge_img_.toImageMsg(_raw_img_msg);
+        m_detected_img_pub.publish(_raw_img_msg);
+    }
+
     return;
 }
 void TensorrtYoloRos::compressedImageCallback(const sensor_msgs::CompressedImage::ConstPtr& msg)
