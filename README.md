@@ -16,12 +16,15 @@
 + `cmake` >= 3.14
 + `OpenCV` >= 4.2
 + `TensorRT`, `CUDA`, `cudNN`
-  + `.engine` file with `TensorRT`
-+ You may want to:
+  + `.engine` file generated with `TensorRT`
+
+<br>
+
+## You may want to:
 
 <details><summary> ■ Unfold here to see how to install CUDA, cuDNN and TensorRT </summary>
 
-### **Note that apt install with deb is preferred to run file and source file build for both of `CUDA` and `cudNN`**
+### ● **Note that apt install with deb is preferred to run file and source file build for both of `CUDA` and `cudNN`**
 + Download and install `CUDA` following instructions at here - https://developer.nvidia.com/cuda-downloads
 + Download and install `cudNN` following instructions at here - https://developer.nvidia.com/cudnn-downloads
   + If you want, also refer to here - https://docs.nvidia.com/deeplearning/cudnn/installation/linux.html#
@@ -49,7 +52,9 @@ dpkg -l | grep cudnn
 nvcc --version
 ```
 
-### **Note that apt install with deb is preferred to other methods for `TensorRT`**
+<br>
+
+### ● **Note that apt install with deb is preferred to other methods for `TensorRT`**
 + Download `TensorRT` at here - https://developer.nvidia.com/tensorrt-download
 + Follow the instructions at here - https://docs.nvidia.com/deeplearning/tensorrt/install-guide/index.html#installing-debian
   + Installing full packages is recommended, which means:
@@ -59,32 +64,39 @@ nvcc --version
   sudo apt install onnx-graphsurgeon
   ```
 
+<br>
+
 </details>
 
 <details><summary> ■ Unfold here to see how to train custom data / generate TensorRT engine file with safe Python3 virtual environment </summary>
 
-### Common step for training / engine file
-+ Make sure that you have installed all dependencies properly.
+<br>
+
+### ● Common step for training / engine file
+0. Make sure that you have installed all dependencies properly.
   + Particularly, you should install full packages of `TensorRT`: `tensorrt`, `python3-libnvinfer-dev`, `onnx-graphsurgeon`
 1. Install and make `Python3` virtual env
 ```bash
-sudo pip3 install virtualenv virtualenvwrapper
+python3 -m pip install virtualenv virtualenvwrapper
 cd <PATH YOU WANT TO SAVE VIRTUAL ENVIRONMENT>
 virtualenv -p python3 <NAME YOU WANT>
 
 *** Now you can activate with
 source <PATH YOU SAVED>/<NAME YOU WANT>/bin/activate
+
 *** Deactivate with
 deactivate
 ```
-2. While virtual env being activated, clone `YOLOv9` repo and install requirements
+2. (While virtual env being activated), clone `YOLOv9` repo and install requirements
 ```bash
 git clone https://github.com/WongKinYiu/yolov9
 cd yolov9
 pip install -r requirements.txt
 ```
 
-### Converting .pt to .onnx, and then .engine
+<br>
+
+### ● Converting .pt to .onnx, and then .engine
 0. (While virtual env being activated)
 1. Get trained `YOLOv9` weight file as `.pt` by training your own data or downloading the pre-trained model at here - https://github.com/WongKinYiu/yolov9/releases
 2. Reparameterize the `.pt` file (saving computation, memory, and size by trimming unnecessary parts for inference but necessary only for training)
@@ -108,7 +120,9 @@ python export.py --weights yolov9-c-reparameterized.pt --include onnx
 /usr/src/tensorrt/bin/trtexec --onnx=yolov9-c-reparameterized.onnx --saveEngine=yolov9-c-int8.engine --int8
 ```
 
-### Training your own data
+<br>
+
+### ● Training your own data
 0. (While virtual env being activated) + `YOLOv9` is cloned already, requirements are installed already
 1. Prepare data and labels in `YOLO format`.
   + You may want to use this - https://github.com/AlexeyAB/Yolo_mark
@@ -189,17 +203,21 @@ yolov9
 6. Train
 ```bash
 cd yolov9
+
 *** Using pretrained model (yolov9-c.pt here), fine-tuning:
 python train_dual.py --batch-size 4 --epochs 100 --img 640 --device 0 --close-mosaic 15 \
 --data training/data.yaml --weights training/yolov9-c.pt --cfg training/yolov9.yaml --hyp data/hyps/hyp.scratch-high.yaml
+
 *** From the scratch:
 python train_dual.py --batch-size 4 --epochs 100 --img 640 --device 0 --close-mosaic 15 \
 --data training/data.yaml --weights '' --cfg training/yolov9.yaml --hyp data/hyps/hyp.scratch-high.yaml
 ```
 
-#### Trouble shooting for training
+<br>
+
+### ● Trouble shooting for training
 0. (While virtual env being activated)
-1 `AttributeError: 'FreeTypeFont' object has no attribute 'getsize'`
+1. `AttributeError: 'FreeTypeFont' object has no attribute 'getsize'`
   + This is because installed Pillow version is too recent.
   + Solve with `pip install Pillow==9.5.0`
 2. Getting `Killed` and does not train
@@ -210,6 +228,7 @@ python train_dual.py --batch-size 4 --epochs 100 --img 640 --device 0 --close-mo
   ```bash
   *** Check the version at https://download.pytorch.org/whl/torch_stable.html
   *** torch >= 1.7.0, torchvision>=0.8.1
+  
   pip install torch==1.11.0+cu115 torchvision==0.12.0+cu115 -f https://download.pytorch.org/whl/torch_stable.html
   ```
 4. `RuntimeError: CUDA out of memory. Tried to allocate 50.00 MiB (GPU 0; 9.76 GiB total capacity; 6.68 GiB already allocated; 45.00 MiB free; 6.82 GiB reserved in total by PyTorch) If reserved memory is >> allocated memory try setting max_split_size_mb to avoid fragmentation.  See documentation for Memory Management and PYTORCH_CUDA_ALLOC_CONF`
