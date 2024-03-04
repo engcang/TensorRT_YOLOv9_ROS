@@ -223,6 +223,6 @@ void Yolov9::draw(cv::Mat& image, std::vector<Detection>& output)
         cv::rectangle(image, cv::Point(box.x, box.y), cv::Point(box.x + box.width, box.y + box.height), colors[class_id], 2);
         // Detection box text
         std::string class_string = classes[class_id] + ' ' + std::to_string(conf).substr(0, 4);
-        cv::putText(image, class_string, cv::Point(box.x, box.y - 8), cv::FONT_HERSHEY_DUPLEX, 0.4, colors[class_id], 2, 0);
+        cv::putText(image, class_string, cv::Point(box.x, box.y - 8), cv::FONT_HERSHEY_DUPLEX, 0.5, colors[class_id], 1, 0);
     }
 }

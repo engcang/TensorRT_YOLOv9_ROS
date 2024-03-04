@@ -10,6 +10,11 @@
 
 <br>
 
+### Known issues / notes
++ The resolution of image to be trained should be multiplication of 64
+
+<br>
+
 ## Dependencies
 + `ROS` (currently supporting only `ROS1`)
 + `C++` >= 17
