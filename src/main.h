@@ -113,7 +113,7 @@ void TensorrtYoloRos::processImage(cv::Mat& img_in, const double& time, const bo
     // draw fps and date time
     char fps_[40], date_time_[40];
     std::sprintf(fps_, "%.2f ms infer + draw", std::chrono::duration_cast<std::chrono::microseconds>(end_time_ - start_time_).count()/1e3);
-    cv::putText(img_in, std::string(fps_), cv::Point(5, 20), cv::FONT_HERSHEY_DUPLEX, 0.6, cv::Scalar(255, 0, 255), 1);
+    cv::putText(img_in, std::string(fps_), cv::Point(5, 18), cv::FONT_HERSHEY_SIMPLEX, 0.55, cv::Scalar(255, 0, 200), 2);
     
     std::time_t timer_ = std::time(NULL);
     struct std::tm* t_;
@@ -121,7 +121,7 @@ void TensorrtYoloRos::processImage(cv::Mat& img_in, const double& time, const bo
     if (t_) // not NULL
     {
         std::sprintf(date_time_, "%d-%d-%d_%d:%d:%d__%d", t_->tm_year+1900, t_->tm_mon+1, t_->tm_mday, t_->tm_hour, t_->tm_min, t_->tm_sec, m_counter);
-        cv::putText(img_in, std::string(date_time_), cv::Point(5, 40), cv::FONT_HERSHEY_DUPLEX, 0.6, cv::Scalar(255, 100, 0), 1);
+        cv::putText(img_in, std::string(date_time_), cv::Point(5, 36), cv::FONT_HERSHEY_SIMPLEX, 0.55, cv::Scalar(255, 50, 0), 2);
     }
 
     // publish image

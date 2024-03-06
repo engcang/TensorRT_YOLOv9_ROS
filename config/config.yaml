@@ -1,7 +1,7 @@
 tensorrt_yolov9_ros:
     image_compressed: false                 # true: use compressed image, false: use raw image
     image_topic: "/camera/image_raw"        # image topic
-    engine_file_path: "/home/mason/ws/yolo_ws/yolov9/yolov9-c.engine"
+    engine_file_path: "/home/mason/ws/yolo_ws/yolov9/yolov9-c_fp16.engine"
     confidence_thres: 0.5                   # confidence threshold
     nms_thres: 0.4                          # nms threshold
     downsampling_infer: 1                   # inference every n frames, if 3, then 1/3 of images

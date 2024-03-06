@@ -103,7 +103,7 @@ Yolov9::Yolov9(const std::string& engine_file_path_in,
     // Create random colors
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_int_distribution<int> dis(30, 255);
+    std::uniform_int_distribution<int> dis(70, 255);
     for (size_t i = 0; i < classes.size(); i++)
     {
         cv::Scalar color = cv::Scalar(dis(gen), dis(gen), dis(gen));
@@ -223,6 +223,8 @@ void Yolov9::draw(cv::Mat& image, std::vector<Detection>& output)
         cv::rectangle(image, cv::Point(box.x, box.y), cv::Point(box.x + box.width, box.y + box.height), colors[class_id], 2);
         // Detection box text
         std::string class_string = classes[class_id] + ' ' + std::to_string(conf).substr(0, 4);
-        cv::putText(image, class_string, cv::Point(box.x, box.y - 8), cv::FONT_HERSHEY_DUPLEX, 0.5, colors[class_id], 1, 0);
+        cv::Size text_size = getTextSize(class_string, cv::FONT_HERSHEY_SIMPLEX, 0.5, 2, 0);
+        cv::rectangle(image, cv::Rect(box.x - 1, box.y - text_size.height - 9, text_size.width + 2, text_size.height + 8), colors[class_id], cv::FILLED);
+        cv::putText(image, class_string, cv::Point(box.x, box.y - 8), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(255, 255, 255), 2, 0);
     }
 }
