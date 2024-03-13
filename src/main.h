@@ -12,7 +12,6 @@
 #include <ros/ros.h>
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/CompressedImage.h>
-#include <image_transport/image_transport.h>
 #include <cv_bridge/cv_bridge.h>
 /// this package headers
 #include <tensorrt_yolov9_ros/bbox.h>
@@ -147,7 +146,7 @@ void TensorrtYoloRos::compressedImageCallback(const sensor_msgs::CompressedImage
     if (m_counter % m_downsampling_infer==0)
     {
         cv::Mat img_in_ = cv_bridge::toCvCopy(*msg, sensor_msgs::image_encodings::BGR8)->image;
-        processImage(img_in_, msg->header.stamp.toSec() , true);
+        processImage(img_in_, msg->header.stamp.toSec(), true);
     }
     return;
 }
