@@ -14,8 +14,8 @@ https://github.com/engcang/TensorRT_YOLOv9_ROS/assets/34734707/0dff22cc-ec12-45f
 
 ### Known issues / notes
 + The resolution of image to be trained should be multiplication of 64
-+ 2024. 05. 12.: Now supporting `TensorRT` >= 10
-+ Check the paths of TensorRT in CMakeLists.txt's line 25, 26
++ [2024-05-12] - **Now supporting `TensorRT` >= 10**
++ **Check the paths of TensorRT in CMakeLists.txt's line 25, 26**
 
 <br>
 
